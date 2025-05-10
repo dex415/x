@@ -30,13 +30,15 @@ for tweet in sntwitter.TwitterUserScraper(TARGET_USER).get_items():
     if tweet.id in seen_ids:
         continue
 
-    tweet_data = {
-        "id": tweet.id,
-        "content": tweet.content,
-        "date": tweet.date.isoformat(),
-        "url": tweet.url,
-        "screenshot": f"{SCREENSHOT_DIR}/{tweet.id}.png"
-    }
+tweet_data = {
+    "id": tweet.id,
+    "content": tweet.content,
+    "date": tweet.date.isoformat(),
+    "url": tweet.url,
+    "screenshot": f"{SCREENSHOT_DIR}/{tweet.id}.png",
+    "likes": tweet.likeCount,
+    "retweets": tweet.retweetCount
+}
 
     # Screenshot the tweet
     with sync_playwright() as p:
