@@ -47,8 +47,13 @@ st.write(f"Showing {len(filtered)} result(s)")
 for tweet in filtered:
     st.markdown(f"---")
     st.markdown(f"**🕒 {tweet['date']}**")
+    
+    # ✅ ADD THIS LINE BELOW:
+    st.markdown(f"👍 {tweet.get('likes', 0)}  🔁 {tweet.get('retweets', 0)}")
+
     st.markdown(f"[View on Twitter]({tweet['url']})")
     st.markdown(tweet["content"])
+
     screenshot_path = tweet.get("screenshot")
     if screenshot_path and os.path.exists(screenshot_path):
         st.image(screenshot_path, use_column_width=True)
