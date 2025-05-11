@@ -7,7 +7,7 @@ from playwright.sync_api import sync_playwright
 TARGET_USER = "kanyewest"  # Change this to your user
 SAVE_PATH = "tweets.jsonl"
 SCREENSHOT_DIR = "screenshots"
-MAX_TWEETS = 10
+MAX_TWEETS = 1000
 
 os.makedirs(SCREENSHOT_DIR, exist_ok=True)
 
