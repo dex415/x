@@ -1,3 +1,4 @@
 streamlit
-snscrape
+snscrape==0.7.0.20230106
 playwright
+python-dateutil
