@@ -4,7 +4,7 @@ import json
 import os
 from playwright.sync_api import sync_playwright
 
-TARGET_USER = "kanyewest"  # Change this to your user
+TARGET_USER = "kanyewest"
 SAVE_PATH = "tweets.jsonl"
 SCREENSHOT_DIR = "screenshots"
 MAX_TWEETS = 1000
@@ -22,45 +22,41 @@ if os.path.exists(SAVE_PATH):
             except:
                 pass
 
-# Fetch tweets
 tweets_to_save = []
-print(f"Scraping tweets from @{TARGET_USER}...")
 
 try:
     for tweet in sntwitter.TwitterUserScraper(TARGET_USER).get_items():
-        print(f"Found tweet ID {tweet.id} at {tweet.date}")
+        if len(tweets_to_save) >= MAX_TWEETS:
+            break
         if tweet.id in seen_ids:
             continue
-        ...
-        # rest of your code
+
+        tweet_data = {
+            "id": tweet.id,
+            "content": tweet.content,
+            "date": tweet.date.isoformat(),
+            "url": tweet.url,
+            "screenshot": f"{SCREENSHOT_DIR}/{tweet.id}.png",
+            "likes": tweet.likeCount,
+            "retweets": tweet.retweetCount
+        }
+
+        # Screenshot the tweet
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page()
+            try:
+                page.goto(tweet.url, timeout=15000)
+                page.wait_for_timeout(3000)
+                page.screenshot(path=tweet_data["screenshot"], full_page=True)
+                print(f"Screenshot saved for tweet {tweet.id}")
+            except Exception as e:
+                print(f"Error screenshotting {tweet.url}: {e}")
+            browser.close()
+
+        tweets_to_save.append(tweet_data)
 except Exception as e:
     print("Scraping error:", e)
-
-
-tweet_data = {
-    "id": tweet.id,
-    "content": tweet.content,
-    "date": tweet.date.isoformat(),
-    "url": tweet.url,
-    "screenshot": f"{SCREENSHOT_DIR}/{tweet.id}.png",
-    "likes": tweet.likeCount,
-    "retweets": tweet.retweetCount
-}
-
-    # Screenshot the tweet
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
-        try:
-            page.goto(tweet.url, timeout=15000)
-            page.wait_for_timeout(4000)  # Wait for tweet to load
-            page.screenshot(path=tweet_data["screenshot"], full_page=True)
-            print(f"Screenshot saved for {tweet.id}")
-        except Exception as e:
-            print(f"Error with {tweet.url}: {e}")
-        browser.close()
-
-    tweets_to_save.append(tweet_data)
 
 # Save new tweets
 if tweets_to_save:
@@ -68,4 +64,4 @@ if tweets_to_save:
         for t in tweets_to_save:
             f.write(json.dumps(t) + "\n")
 
-print(f"Done. {len(tweets_to_save)} new tweets saved.")
+print(f"Saved {len(tweets_to_save)} new tweets.")
