@@ -2,7 +2,7 @@ name: Scrape Tweets
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # every 5 minutes
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -26,8 +26,10 @@ jobs:
       - name: Run scraper
         run: python scrape.py
 
-      - name: Upload screenshots as artifact
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          name: tweet-screenshots
-          path: screenshots/
+      - name: Commit new data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add tweets.jsonl screenshots/
+          git commit -m "🤖 Auto-update tweet data" || echo "No changes to commit"
+          git push
