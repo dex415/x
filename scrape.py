@@ -24,11 +24,18 @@ if os.path.exists(SAVE_PATH):
 
 # Fetch tweets
 tweets_to_save = []
-for tweet in sntwitter.TwitterUserScraper(TARGET_USER).get_items():
-    if len(tweets_to_save) >= MAX_TWEETS:
-        break
-    if tweet.id in seen_ids:
-        continue
+print(f"Scraping tweets from @{TARGET_USER}...")
+
+try:
+    for tweet in sntwitter.TwitterUserScraper(TARGET_USER).get_items():
+        print(f"Found tweet ID {tweet.id} at {tweet.date}")
+        if tweet.id in seen_ids:
+            continue
+        ...
+        # rest of your code
+except Exception as e:
+    print("Scraping error:", e)
+
 
 tweet_data = {
     "id": tweet.id,
