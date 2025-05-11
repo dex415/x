@@ -31,7 +31,7 @@ def is_tweet_deleted(tweet_id):
 # Streamlit Layout
 st.set_page_config(page_title="Tweet Watcher", layout="centered")
 st.title("📡 Tweet Watcher Dashboard")
-st.markdown("Monitoring tweets from a specific user with screenshots. Updated every 5 minutes.")
+st.markdown("Monitoring tweets from **@kanyewest** with screenshots. Updated every 5 minutes.")
 
 # Load and filter tweets
 tweets = load_tweets()
